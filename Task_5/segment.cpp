@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/filters/passthrough.h>
@@ -10,8 +11,7 @@
 using namespace pcl;
 using namespace std;
 
-// Closest algorithm for this particular task is plane model segmentation, assuming 
-// road is a plane
+// Min cut, graph based segmentation
 
 class Segmentation {
     public:
@@ -61,13 +61,14 @@ class Segmentation {
             std::cout << "Maximum flow is " << seg.getMaxFlow () << std::endl;
 
             // writing the pcd
-            // pcl::PCDWriter writer;
-            // pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = seg.getColoredCloud ();
-            // std::stringstream ss;
-            // ss << "cloud_cluster_segmented.pcd";
-            // writer.write<pcl::PointXYZ> (ss.str(), *colored_cloud, false);
+            pcl::PointCloud <pcl::PointXYZRGB>::Ptr colored_cloud = seg.getColoredCloud ();
+            pcl::io::savePLYFileBinary("cloud_cluster_Segment.pcd", *colored_cloud);
 
-            pcl::PointCloud<pcl::PointXYZRGB>::Ptr colored_cloud = seg.getColoredCloud();
+            pcl::visualization::CloudViewer viewer ("Cluster viewer");
+            viewer.showCloud(colored_cloud);
+            while (!viewer.wasStopped ()) {
+            }
+
         }
 
 };
